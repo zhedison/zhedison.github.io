@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>微服务之-网关与配置中心 | Edison's Blog</title><meta name="author" content="Edison"><meta name="copyright" content="Edison"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="微服务之-网关与配置中心一、网关由于微服务的地址随时都有可能改变，不可能对外暴露这些接口，基于安全以及高内聚低耦合等设计，有必要做一个将外部系统和内部系统做一个切割。而且如果没有网关的话，权限需要每个服务都写一遍，大大增加代码量，导致jar包增大。另外如果没有网关服务的ip地址变了的话，调用了这个服务的服务都得改，增大工作量。 网关的实现主要有两个：  zuul gateway  ZuulZuul">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务之-网关与配置中心">
+<meta property="og:url" content="http://example.com/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/index.html">
+<meta property="og:site_name" content="Edison&#39;s Blog">
+<meta property="og:description" content="微服务之-网关与配置中心一、网关由于微服务的地址随时都有可能改变，不可能对外暴露这些接口，基于安全以及高内聚低耦合等设计，有必要做一个将外部系统和内部系统做一个切割。而且如果没有网关的话，权限需要每个服务都写一遍，大大增加代码量，导致jar包增大。另外如果没有网关服务的ip地址变了的话，调用了这个服务的服务都得改，增大工作量。 网关的实现主要有两个：  zuul gateway  ZuulZuul">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ts1.cn.mm.bing.net/th/id/R-C.e0061702be676919ab87ec3ba4cc2f56?rik=y3WM4fgyW%2fRdug&riu=http%3a%2f%2fwww.asabtec.com%2fimages%2fGataway-logo1.jpg&ehk=EuTLb4JzLT3kZ4oyF04wHf%2fbFKorCQ11u1MGoJzRwl4%3d&risl=&pid=ImgRaw&r=0">
+<meta property="article:published_time" content="2023-02-18T04:00:34.000Z">
+<meta property="article:modified_time" content="2023-02-18T04:04:27.505Z">
+<meta property="article:author" content="Edison">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ts1.cn.mm.bing.net/th/id/R-C.e0061702be676919ab87ec3ba4cc2f56?rik=y3WM4fgyW%2fRdug&riu=http%3a%2f%2fwww.asabtec.com%2fimages%2fGataway-logo1.jpg&ehk=EuTLb4JzLT3kZ4oyF04wHf%2fbFKorCQ11u1MGoJzRwl4%3d&risl=&pid=ImgRaw&r=0"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '微服务之-网关与配置中心',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-18 12:04:27'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://ts1.cn.mm.bing.net/th/id/R-C.e0061702be676919ab87ec3ba4cc2f56?rik=y3WM4fgyW%2fRdug&amp;riu=http%3a%2f%2fwww.asabtec.com%2fimages%2fGataway-logo1.jpg&amp;ehk=EuTLb4JzLT3kZ4oyF04wHf%2fbFKorCQ11u1MGoJzRwl4%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Edison's Blog</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">微服务之-网关与配置中心</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-18T04:00:34.000Z" title="发表于 2023-02-18 12:00:34">2023-02-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-02-18T04:04:27.505Z" title="更新于 2023-02-18 12:04:27">2023-02-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/">技术总结</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="微服务之-网关与配置中心"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="微服务之-网关与配置中心"><a href="#微服务之-网关与配置中心" class="headerlink" title="微服务之-网关与配置中心"></a>微服务之-网关与配置中心</h1><h2 id="一、网关"><a href="#一、网关" class="headerlink" title="一、网关"></a>一、网关</h2><p>由于微服务的地址随时都有可能改变，不可能对外暴露这些接口，基于安全以及高内聚低耦合等设计，有必要做一个将外部系统和内部系统做一个切割。而且如果没有网关的话，权限需要每个服务都写一遍，大大增加代码量，导致jar包增大。另外如果没有网关服务的ip地址变了的话，调用了这个服务的服务都得改，增大工作量。</p>
+<p>网关的实现主要有两个：</p>
+<ul>
+<li>zuul</li>
+<li>gateway</li>
+</ul>
+<h3 id="Zuul"><a href="#Zuul" class="headerlink" title="Zuul"></a>Zuul</h3><p>Zuul 的功能：</p>
+<ul>
+<li>权限控制</li>
+<li>负载均衡</li>
+<li>动态路由</li>
+<li>静态资源处理</li>
+<li>监控</li>
+</ul>
+<p>Zuul中的功能基本上都是在过滤器中实现的，过滤器的类型有:</p>
+<ul>
+<li>Pre</li>
+<li>Post</li>
+<li>error</li>
+<li>routing</li>
+</ul>
+<p>过滤器只需要继承ZuulFilter类即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AuthFilter</span> <span class="keyword">extends</span> <span class="title class_">ZuulFilter</span> &#123;</span><br><span class="line">    <span class="comment">//此处配置过滤器的类型</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">filterType</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;pre&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//此处配置过滤器的优先级</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">filterOrder</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//是否过滤</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">shouldFilter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//具体的过滤条件，返回值无所谓的。</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">run</span><span class="params">()</span> <span class="keyword">throws</span> ZuulException &#123;</span><br><span class="line">        <span class="type">RequestContext</span> <span class="variable">ctx</span> <span class="operator">=</span> RequestContext.getCurrentContext();</span><br><span class="line">        <span class="type">RequestAttributes</span> <span class="variable">requestAttributes</span> <span class="operator">=</span> RequestContextHolder.currentRequestAttributes();</span><br><span class="line">        <span class="type">HttpServletRequest</span> <span class="variable">request</span> <span class="operator">=</span> ((ServletRequestAttributes) requestAttributes).getRequest();</span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> request.getParameter(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (!<span class="string">&quot;zhangsan&quot;</span>.equals(username)&amp;&amp;!<span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">            ctx.setSendZuulResponse(<span class="literal">false</span>);</span><br><span class="line">            ctx.setResponseBody(<span class="string">&quot;请先登录&quot;</span>);</span><br><span class="line">            ctx.addZuulResponseHeader(<span class="string">&quot;content-type&quot;</span>,<span class="string">&quot;text/html;charset=utf-8&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实现路由只需要将Zuul注册到注册中心，然后根据请求路径，路由到不同的服务中，下面的代码表示，当请求路径为&#x2F;p&#x2F;xxx就路由到provider中。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">zuul.routes.provider</span>=<span class="string">/p/**</span></span><br></pre></td></tr></table></figure>
+
+<p>如果路由的配置是这样的</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">zuul.routes.consumer</span>=<span class="string">/consumer/**</span></span><br><span class="line"><span class="attr">zuul.routes.consumer-hello</span>=<span class="string">/consumer/hello/**</span></span><br></pre></td></tr></table></figure>
+
+<p>那当我访问 &#x2F;consumer&#x2F;hello&#x2F;123的时候，会出现冲突，可能会路由去consumer这个服务上，那么如何避免呢，只需把properties文件改为yml就好了。</p>
+<h3 id="GateWay"><a href="#GateWay" class="headerlink" title="GateWay"></a>GateWay</h3><p>gateway也是一个网关，有以下功能：</p>
+<ul>
+<li>限流</li>
+<li>路径重写</li>
+<li>动态路由</li>
+<li>集成Spring cloud DiscoveryClient</li>
+<li>继承Hystrix断路器</li>
+</ul>
+<p>和Zuul对比：</p>
+<p>1、Zuul是Netflix公司的产品，GateWay是Spring家族的东西，可以更好的和Spring家族的其他组件进行整合。</p>
+<p>2、Zuul不支持长连接，例如websocket</p>
+<p>3、spring cloud gateway支持限流</p>
+<p>4、Spring cloud gateway基于netty来开发，实现了异步和非阻塞，占用资源少，性能强于zuul</p>
+<p>关于gateway的路由功能</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">gateway</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">gateway:</span></span><br><span class="line">      <span class="attr">routes:</span></span><br><span class="line">      <span class="comment">#设置id</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">provider_routes</span></span><br><span class="line">        <span class="comment">#lb的意思是根据微服务中的名字来查找，这句的意思是查找provider服务，这里还支持，http、ws</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">lb://provider</span></span><br><span class="line">          <span class="comment">#这里是匹配的规则，可以有许多种配置的方式，这只是其中一种</span></span><br><span class="line">          <span class="comment">#具体多少种，上网查</span></span><br><span class="line">          <span class="attr">predicates:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">Path=/p/**</span></span><br><span class="line">          <span class="attr">filters:</span></span><br><span class="line"><span class="comment">#            如果不去除前缀的话，请求会变成localhost/p/**，但实际上是localhost/，</span></span><br><span class="line"><span class="comment">#            所以必须去除前缀。</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">StripPrefix=1</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">consumer</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">lb://consumer</span></span><br><span class="line">          <span class="attr">predicates:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">Path=/c/**</span></span><br><span class="line">          <span class="attr">filters:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">StripPrefix=1</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">locator:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">          <span class="comment">#如果不写这句的话服务的名字就必须是大写</span></span><br><span class="line">          <span class="attr">lower-case-service-id:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="二、配置中心"><a href="#二、配置中心" class="headerlink" title="二、配置中心"></a>二、配置中心</h2><p>因为微服务是由许许多多个服务组成的，它不像以前单机项目那样，只有一个配置文件，100个服务可能有100个配置文件，而且每个服务还有可能是集群部署，每个服务还分为生产环境、测试环境、开发环境，这样管理配置文件就成为了一个难题。因此，就出现了，Spring Cloud Config Server这样的工具，它可以从gitee、github或者数据库等，实时的获取配置文件，我们只需要把配置文件放在这些公共的地方，Spring Cloud Config Server就可以自动获取得到。</p>
+<h4 id="Spring-Cloud-Config-Server"><a href="#Spring-Cloud-Config-Server" class="headerlink" title="Spring Cloud Config Server"></a><strong>Spring Cloud Config Server</strong></h4><p>只需要添加依赖+配置gitee的地址、用户名密码+注册到注册中心上去。就ok了。</p>
+<p>先在gitee上创建自己的配置文件仓库，</p>
+<p><img src="/imgs/spring-cloud2/1.png" alt="image-20230218101710600"></p>
+<p>其中的client01为需要获取配置的服务名称。</p>
+<p><img src="/imgs/spring-cloud2/2.png" alt="image-20230218101803343"></p>
+<p>里面有不同的环境，对应不同的配置文件。</p>
+<p><strong>配置文件的格式：</strong></p>
+<p>{项目名称}-{开发环境}.{文件格式}</p>
+<p>然后就可以配置configServer了。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#gitee的仓库地址</span></span><br><span class="line"><span class="attr">spring.cloud.config.server.git.uri</span>=<span class="string">https://gitee.com/edisonChenJH/config_2207.git</span></span><br><span class="line"><span class="comment">#获取配置文件的路径，*代表全部</span></span><br><span class="line"><span class="attr">spring.cloud.config.server.git.search-paths</span>=<span class="string">/client01</span></span><br><span class="line"><span class="comment">#gitee用户名</span></span><br><span class="line"><span class="attr">spring.cloud.config.server.git.username</span>=<span class="string">18138721930</span></span><br><span class="line"><span class="comment">#gitee密码</span></span><br><span class="line"><span class="attr">spring.cloud.config.server.git.password</span>=<span class="string">a547306650</span></span><br><span class="line"><span class="comment">#分支</span></span><br><span class="line"><span class="attr">spring.cloud.config.server.default-label</span>=<span class="string">master</span></span><br><span class="line"><span class="comment">#eureka地址</span></span><br><span class="line"><span class="attr">eureka.client.service-url.defaultZone</span>=<span class="string">http://localhost:8000/eureka</span></span><br></pre></td></tr></table></figure>
+
+<p> 最后在启动类上加上@EnableEurekaClient@EnableConfigServer这两个注释。</p>
+<p>可以通过接口来查看配置文件：</p>
+<p><img src="/imgs/spring-cloud2/3.png" alt="image-20230218102609092"></p>
+<h4 id="Spring-Cloud-Config-Client"><a href="#Spring-Cloud-Config-Client" class="headerlink" title="Spring Cloud Config Client"></a>Spring Cloud Config Client</h4><p>上面说的是配置中心，那么服务如何获取到配置并在服务启动时加载对应的配置文件呢？</p>
+<p>需要加上两个依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">这个依赖是为了让服务在项目启动前加载配置文件</span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-bootstrap<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      这个是config client的依赖</span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后我们还需要创建一个bootstrap.properties文件，这是什么？</p>
+<p> <img src="https://ask.qcloudimg.com/http-save/yehe-1344757/rkmv5fz9fz.jpeg?imageView2/2/w/1620" alt="img"> </p>
+<p>这是来自spring cloud 工程师的回答。大意是，当使用你使用Spring Cloud    Config Server的时候，你应该把git的配置、应用的名称、加密解密的信息写在里面。技术上来讲，bootstrap.yml是加载在父级上下文中的，意味着这加载在application.properties之前。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#项目名称</span></span><br><span class="line"><span class="attr">spring.application.name</span>=<span class="string">client01</span></span><br><span class="line"></span><br><span class="line"><span class="attr">server.port</span>=<span class="string">8088</span></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka.client.service-url.defaultZone</span>=<span class="string">http://localhost:8000/eureka</span></span><br><span class="line"><span class="comment">#这是configServer在eureka上注册的名字</span></span><br><span class="line"><span class="attr">spring.cloud.config.discovery.service-id</span>=<span class="string">configserver</span></span><br><span class="line"><span class="comment">#开启配置</span></span><br><span class="line"><span class="attr">spring.cloud.config.discovery.enabled</span>=<span class="string">true</span></span><br><span class="line"><span class="comment">#该应用的环境</span></span><br><span class="line"><span class="attr">spring.cloud.config.profile</span>=<span class="string">dev</span></span><br><span class="line"><span class="comment">#获取配置文件的git分支</span></span><br><span class="line"><span class="attr">spring.cloud.config.label</span>=<span class="string">master</span></span><br><span class="line"><span class="comment">#如果你的COnfigServer配置了用户名密码就加上</span></span><br><span class="line"><span class="attr">spring.cloud.config.username</span>=<span class="string">admin</span></span><br><span class="line"><span class="attr">spring.cloud.config.password</span>=<span class="string">123</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样当我们的Client01服务启动的时候，就会先去ConfigServer中获取相应的配置文件。</p>
+<h4 id="重试"><a href="#重试" class="headerlink" title="重试"></a>重试</h4><p>由于网络的缘故，难免会有失败的时候，这时就可以来进行重试。</p>
+<p>这里的重试和Spring boot自带的重试是很相似的，只需要加上两个依赖，</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.retry<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-retry<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-aop<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>加上配置</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#表示失败是否快速重试，必须要开启</span></span><br><span class="line"><span class="attr">spring.cloud.config.fail-fast</span>=<span class="string">true</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">#最大重试次数</span></span><br><span class="line"><span class="attr">spring.cloud.config.retry.max-attempts</span>=<span class="string">6</span></span><br><span class="line"><span class="comment">#表示初始间隔是1000毫秒</span></span><br><span class="line"><span class="attr">spring.cloud.config.retry.initial-interval</span>=<span class="string">1000</span></span><br><span class="line"><span class="comment">#表示最大的间隔时间是2000毫秒</span></span><br><span class="line"><span class="attr">spring.cloud.config.retry.max-interval</span>=<span class="string">2000</span></span><br><span class="line"><span class="comment">#表示重试的递增时间，比如第一次1000毫秒，第二次1000*1.1毫秒。。</span></span><br><span class="line"><span class="attr">spring.cloud.config.retry.multiplier</span>=<span class="string">1.1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这样就可以了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Edison</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">http://example.com/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Edison's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/">技术</a></div><div class="post_share"><div class="social-share" data-image="https://ts1.cn.mm.bing.net/th/id/R-C.e0061702be676919ab87ec3ba4cc2f56?rik=y3WM4fgyW%2fRdug&amp;riu=http%3a%2f%2fwww.asabtec.com%2fimages%2fGataway-logo1.jpg&amp;ehk=EuTLb4JzLT3kZ4oyF04wHf%2fbFKorCQ11u1MGoJzRwl4%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-OpenFeign%E5%92%8CHystrix/"><img class="next-cover" src="https://ts1.cn.mm.bing.net/th/id/R-C.d1ba013ee759798a65fe239da852db7a?rik=PrGYI%2fcWm0U2%2fw&amp;riu=http%3a%2f%2foytmxyuek.bkt.clouddn.com%2f20210418feign.jpg&amp;ehk=oA5nqACs49f%2f043iUOVg8v5v6UDXSFdivJ4ksBoKLUQ%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">微服务之-OpenFeign和Hystrix</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/12/15/SpringMVC%E6%94%BB%E7%95%A5/" title="SpringMVC攻略"><img class="cover" src="https://pic4.zhimg.com/v2-37ff43e92267558c2fbaa70aedbfc133_1200x500.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-15</div><div class="title">SpringMVC攻略</div></div></a></div><div><a href="/2022/12/14/Spring%E4%BA%8B%E5%8A%A1%E6%94%BB%E7%95%A5/" title="Spring事务攻略"><img class="cover" src="https://pic4.zhimg.com/v2-118bdf290cc14c71af37e788215048e4_1440w.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-14</div><div class="title">Spring事务攻略</div></div></a></div><div><a href="/2022/12/12/Spring%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" title="Spring技术总结"><img class="cover" src="https://spring.io/images/projects/spring-framework-640ad1b04f7efa89e0f0f7353e6b5e02.svg?v=2" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-12</div><div class="title">Spring技术总结</div></div></a></div><div><a href="/2022/12/19/String-%E7%BA%AFJava%E4%BB%A3%E7%A0%81%E9%85%8D%E7%BD%AEssm/" title="String 纯Java代码配置ssm"><img class="cover" src="https://tse1-mm.cn.bing.net/th/id/OIP-C.zaSZxSdcDQ_zzAhobZqJhAAAAA?pid=ImgDet&rs=1" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-19</div><div class="title">String 纯Java代码配置ssm</div></div></a></div><div><a href="/2022/12/16/mybatis-plus/" title="改mybatis到mybatis-plus的擎天巨坑"><img class="cover" src="https://tse4-mm.cn.bing.net/th/id/OIP-C.TKmLrALCjduAaSP265-GEQAAAA?w=234&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-12-16</div><div class="title">改mybatis到mybatis-plus的擎天巨坑</div></div></a></div><div><a href="/2023/01/03/Spring-security%E6%94%BB%E7%95%A5-01/" title="Spring security攻略-01"><img class="cover" src="https://tse4-mm.cn.bing.net/th/id/OIP-C.u39Usm8SpOI5-znNC6MNqgAAAA?pid=ImgDet&rs=1" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-03</div><div class="title">Spring security攻略-01</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Edison</div><div class="author-info__description">record</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="toc-number">1.</span> <span class="toc-text">微服务之-网关与配置中心</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%BD%91%E5%85%B3"><span class="toc-number">1.1.</span> <span class="toc-text">一、网关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Zuul"><span class="toc-number">1.1.1.</span> <span class="toc-text">Zuul</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GateWay"><span class="toc-number">1.1.2.</span> <span class="toc-text">GateWay</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="toc-number">1.2.</span> <span class="toc-text">二、配置中心</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring-Cloud-Config-Server"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">Spring Cloud Config Server</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Spring-Cloud-Config-Client"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">Spring Cloud Config Client</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E8%AF%95"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">重试</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" title="微服务之-网关与配置中心"><img src="https://ts1.cn.mm.bing.net/th/id/R-C.e0061702be676919ab87ec3ba4cc2f56?rik=y3WM4fgyW%2fRdug&amp;riu=http%3a%2f%2fwww.asabtec.com%2fimages%2fGataway-logo1.jpg&amp;ehk=EuTLb4JzLT3kZ4oyF04wHf%2fbFKorCQ11u1MGoJzRwl4%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微服务之-网关与配置中心"/></a><div class="content"><a class="title" href="/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-%E7%BD%91%E5%85%B3%E4%B8%8E%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" title="微服务之-网关与配置中心">微服务之-网关与配置中心</a><time datetime="2023-02-18T04:00:34.000Z" title="发表于 2023-02-18 12:00:34">2023-02-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-OpenFeign%E5%92%8CHystrix/" title="微服务之-OpenFeign和Hystrix"><img src="https://ts1.cn.mm.bing.net/th/id/R-C.d1ba013ee759798a65fe239da852db7a?rik=PrGYI%2fcWm0U2%2fw&amp;riu=http%3a%2f%2foytmxyuek.bkt.clouddn.com%2f20210418feign.jpg&amp;ehk=oA5nqACs49f%2f043iUOVg8v5v6UDXSFdivJ4ksBoKLUQ%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微服务之-OpenFeign和Hystrix"/></a><div class="content"><a class="title" href="/2023/02/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B-OpenFeign%E5%92%8CHystrix/" title="微服务之-OpenFeign和Hystrix">微服务之-OpenFeign和Hystrix</a><time datetime="2023-02-18T03:50:55.000Z" title="发表于 2023-02-18 11:50:55">2023-02-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/09/rabbitMq%E6%94%BB%E7%95%A5/" title="rabbitMq攻略"><img src="https://img0.baidu.com/it/u=3517305748,2991400436&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPG?w=500&amp;h=247" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="rabbitMq攻略"/></a><div class="content"><a class="title" href="/2023/02/09/rabbitMq%E6%94%BB%E7%95%A5/" title="rabbitMq攻略">rabbitMq攻略</a><time datetime="2023-02-09T11:19:06.000Z" title="发表于 2023-02-09 19:19:06">2023-02-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/06/redis%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" title="redis技术总结"><img src="https://tse4-mm.cn.bing.net/th/id/OIP-C.HG-jIPNxE_du065vf2K3XQHaE8?pid=ImgDet&amp;rs=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="redis技术总结"/></a><div class="content"><a class="title" href="/2023/02/06/redis%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" title="redis技术总结">redis技术总结</a><time datetime="2023-02-06T13:39:13.000Z" title="发表于 2023-02-06 21:39:13">2023-02-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/04/%E5%A4%84%E7%90%86%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7/" title="处理接口幂等性"><img src="https://p1.ssl.qhimg.com/dr/270_500_/t01b7fe52c6a73f63b0.png?size=268x268" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="处理接口幂等性"/></a><div class="content"><a class="title" href="/2023/02/04/%E5%A4%84%E7%90%86%E6%8E%A5%E5%8F%A3%E5%B9%82%E7%AD%89%E6%80%A7/" title="处理接口幂等性">处理接口幂等性</a><time datetime="2023-02-04T08:35:15.000Z" title="发表于 2023-02-04 16:35:15">2023-02-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Edison</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
